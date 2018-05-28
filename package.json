@@ -1,0 +1,38 @@
+{
+  "name": "mattermoster-mpd-plugin",
+  "version": "0.0.1",
+  "description": "Music Player Daemon (MPD) client plugin for Mattermoster API based on Node.js.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swordf1zh/mattermoster-mpd-plugin.git"
+  },
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "cross-env DEBUG=mattermoster:*,i18n:* nodemon ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mattermost",
+    "slack",
+    "integration",
+    "slash-command",
+    "mattermoster",
+    "groove-basin",
+    "music-player-daemon",
+    "mpd"
+  ],
+  "author": "Ricardo Tribaldos <ricardo@baru.studio> (http://baru.studio)",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "express": "^4.16.3",
+    "mattermoster": "^1.0.0",
+    "mpd": "^1.3.0",
+    "q": "^1.5.1"
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.6",
+    "nodemon": "^1.17.5"
+  }
+}
