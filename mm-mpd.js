@@ -2,6 +2,7 @@ const debug = require('debug')('mattermoster:model-mm-gbremote');
 const mpd = require('mpd');
 const url = require('url');
 const Q = require('q');
+const json2md = require('json2md');
 
 class MmMpd {
   constructor() {

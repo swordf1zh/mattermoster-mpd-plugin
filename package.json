@@ -27,6 +27,7 @@
   "dependencies": {
     "debug": "^3.1.0",
     "express": "^4.16.3",
+    "json2md": "^1.6.1",
     "mattermoster": "^1.0.0",
     "mpd": "^1.3.0",
     "q": "^1.5.1"
