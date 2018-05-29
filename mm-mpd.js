@@ -88,6 +88,7 @@ class MmMpd {
 
   async audioCmd(cmd, args) {
     const conn = await this.connect();
+    let list, label;
 
     switch (cmd) {
       case 'play':
@@ -95,20 +96,50 @@ class MmMpd {
       case 'stop':
       case 'next':
       case 'prev':
-      case 'status':
         await this.command(cmd);
-        return await this.command('currentsong');
+      case 'status':
+        return await this.getCurrSongStatus();
+
+      case 'list':
+        list = await this.command('list', args);
+        return this.makeMdTable(list);
+
+      case 'shuffle':
+        list = await this.command(cmd, args);
+        args = [];
+      case 'playlist':
+        if (args[0]) {
+          let index = parseInt(args[0]) - 1;
+          args[0] = index + '';
+        }
+        list = await this.command('playlistinfo', args);
+        return this.makeSongMdTable(list);
+
+      case 'searchgenre':
+      case 'searchtitle':
+      case 'searchartist':
+        label = cmd.substring(6);
+        args.unshift(label);
+        //@todo 1 Sort results by 'label'
+        list = await this.command('search', args);
+        return this.makeSongMdTable(list);
 
       case 'playgenre':
+      case 'playtitle':
+      case 'playartist':
         await this.command('clear');
-        args.unshift('Genre');
-        await this.command('findadd', args);
+        label = cmd.substring(4);
+        args.unshift(label);
+        await this.command('searchadd', args);
         await this.command('playid');
-        return await this.command('currentsong');
+        return await this.getCurrSongStatus();
 
       case 'queuegenre':
-        args.unshift('Genre');
-        await this.command('findadd', args);
+      case 'queuetitle':
+      case 'queueartist':
+        label = cmd.substring(5);
+        args.unshift(label);
+        await this.command('searchadd', args);
         return await this.command('currentsong');
 
       case 'xx':
