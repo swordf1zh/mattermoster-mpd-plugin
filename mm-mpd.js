@@ -120,6 +120,70 @@ class MmMpd {
     }
   }
 
+  makeMdTable(json) {
+    let rows = json.length ? json : [ json ];
+    let headers = Object.keys(rows[0]);
+
+    return json2md({ table: { headers, rows } });
+  }
+
+  makeSongMdTable(songJson) {
+    let songs = songJson.length ? songJson : [ songJson ];
+    let text = '';
+
+    if (songs.length === 1) {
+      if (!songs[0].Time) return 'No songs found!';
+    } else {
+      text += `Found ${songs.length} items`;
+      text += (songs.length > 30) ? '. Showing first 30 items:' : ':';
+    }
+
+    let headers = `No. Artist Title Duration Genre`.split(' ');
+    let rows = [];
+    for (let i = 0; i < 30; i++) {
+      const sObj = songs[i];
+      if (!sObj) continue;
+      rows.push([
+        i + 1,
+        sObj.Artist || '',
+        sObj.Title || '',
+        this.convertSeconds(sObj.Time) || '',
+        sObj.Genre || '',
+      ]);
+    };
+
+    return text + '\n\n' + json2md({ table: { headers, rows } });
+  }
+
+  async getCurrSongStatus() {
+    let song = await this.command('currentsong');
+    let stat = await this.command('status');
+    let elapsed = this.convertSeconds(stat.elapsed);
+    let duration = this.convertSeconds(song.Time);
+    let songTitle = song.Title || 'No title';
+    let text = `\`${stat.state}\` ${elapsed} / ${duration}\n${songTitle}`;
+    if (song.Artist) text += `\n~ _${song.Artist}_`;
+    return text;
+  }
+
+  convertSeconds(seconds) {
+    let date = new Date(null);
+    date.setHours(0);
+    date.setSeconds(seconds);
+    let h = this.pad(date.getHours(), 2);
+    let m = this.pad(date.getMinutes(), 2);
+    let s = this.pad(date.getSeconds(), 2);
+    return (h !== '00')
+           ? `${h}:${m}:${s}`
+           : `${m}:${s}`;
+  }
+
+  pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+  }
+
   async do(mmData) {
     debug(mmData);
 
@@ -138,7 +202,7 @@ class MmMpd {
     debug('Args:', input_args);
 
     // Ejecutamos comando de audio
-    mmRes.text = await this.audioCmd(input_cmd, input_args)
+    mmRes.text = await this.audioCmd(input_cmd, input_args);
     return mmRes;
   }
 
