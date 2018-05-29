@@ -1,4 +1,4 @@
-const debug = require('debug')('mattermoster:model-mm-gbremote');
+const debug = require('debug')('mattermoster:model-mm-mpd');
 const mpd = require('mpd');
 const url = require('url');
 const Q = require('q');
@@ -82,7 +82,8 @@ class MmMpd {
       }
       msgObj[key] = value;
     });
-    return output.length ? output : msgObj;
+    output.push(msgObj);
+    return (output.length > 1) ? output : output[0];
   }
 
   async audioCmd(cmd, args) {
