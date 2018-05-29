@@ -10,7 +10,9 @@ mpdRouter.post('/', (req, res) => {
   mmMpd.do(req.body).then(
     (result) => success(res, result),
     (err) => error(res, err)
-  );
+  ).catch((err) => {
+    error(res, err);
+  })
 });
 
 function success(response, result) {

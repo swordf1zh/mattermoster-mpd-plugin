@@ -58,11 +58,10 @@ class MmMpd {
       if (err) {
         debug(err);
         commandDeferred.reject('Error sending command to MPD');
+      } else {
+        let msgObj = this.parseKeyValueMessage(msg);
+        commandDeferred.resolve(msgObj);
       }
-      debug('msg', msg);
-      let msgObj = this.parseKeyValueMessage(msg);
-      debug('msgObj', msgObj);
-      commandDeferred.resolve(msgObj);
     });
 
     return commandDeferred.promise;
